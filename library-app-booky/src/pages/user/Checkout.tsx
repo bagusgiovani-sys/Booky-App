@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { useCart } from '@/hooks/useCart'
 import { useBorrowFromCart } from '@/hooks/useLoans'
 import { ROUTES } from '@/constants'
+import type { CartItem } from '@/types/cart'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'sonner'
@@ -23,7 +24,7 @@ export default function Checkout() {
   const [agreedReturn, setAgreedReturn] = useState(false)
   const [agreedPolicy, setAgreedPolicy] = useState(false)
 
-  const items = (cartData?.data?.items ?? []).filter((item: any) =>
+  const items = ((cartData?.data?.items ?? []) as CartItem[]).filter((item) =>
     selectedIds.includes(item.id)
   )
 
@@ -67,7 +68,7 @@ export default function Checkout() {
       {/* Book List */}
       <section className="space-y-3">
         <h2 className="text-base font-bold text-gray-900">Book List</h2>
-        {items.map((item: any) => (
+        {items.map((item: CartItem) => (
           <div key={item.id} className="flex items-center gap-3">
             <div className="w-16 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
               {item.book?.coverImage ? (

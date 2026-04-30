@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart, useRemoveFromCart } from '@/hooks/useCart'
 import { ROUTES } from '@/constants'
+import type { CartItem } from '@/types/cart'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { Trash2 } from 'lucide-react'
@@ -23,7 +24,7 @@ export default function Cart() {
 
   const toggleSelectAll = () => {
     if (allSelected) setSelectedIds([])
-    else setSelectedIds(items.map((item: any) => item.id))
+    else setSelectedIds((items as CartItem[]).map((item) => item.id))
   }
 
   const toggleItem = (id: number) => {
@@ -78,7 +79,7 @@ export default function Cart() {
           </motion.p>
         ) : (
           <AnimatePresence>
-            {items.map((item: any, i: number) => (
+            {items.map((item: CartItem, i: number) => (
               <motion.div
                 key={item.id}
                 initial={{ opacity: 0, y: 12 }}

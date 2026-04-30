@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useBooks } from '@/hooks/useBooks'
 import { useCategories } from '@/hooks/useCategories'
 import { ROUTES } from '@/constants'
+import type { Category } from '@/types/category'
+import type { Book } from '@/types/book'
 import { Star, SlidersHorizontal, X } from 'lucide-react'
 import BookCard from '@/components/common/BookCard'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -20,9 +22,9 @@ export default function Category() {
   const [page, setPage] = useState(1)
 
   const { data: categoriesData } = useCategories()
-  const categories = categoriesData
-    ?.filter((cat: any) => CATEGORY_ORDER.includes(cat.name))
-    .sort((a: any, b: any) => CATEGORY_ORDER.indexOf(a.name) - CATEGORY_ORDER.indexOf(b.name))
+  const categories = (categoriesData as Category[] | undefined)
+    ?.filter((cat) => CATEGORY_ORDER.includes(cat.name))
+    .sort((a, b) => CATEGORY_ORDER.indexOf(a.name) - CATEGORY_ORDER.indexOf(b.name))
 
   const { data: booksData, isFetching } = useBooks({
     categoryId: selectedCategories.length === 1 ? selectedCategories[0] : undefined,
@@ -51,7 +53,7 @@ export default function Category() {
     <div className="space-y-6">
       <div className="space-y-3">
         <p className="text-sm font-bold text-gray-900">Category</p>
-        {categories?.map((cat: any) => (
+        {categories?.map((cat: Category) => (
           <div key={cat.id} className="flex items-center gap-2">
             <Checkbox
               id={`cat-${cat.id}`}
@@ -127,7 +129,7 @@ export default function Category() {
             <p className="text-center text-gray-400 py-20">No books found</p>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {books.map((book: any) => (
+              {books.map((book: Book) => (
                 <BookCard key={book.id} book={book} onClick={() => navigate(ROUTES.BOOK_DETAIL(book.id))} />
               ))}
             </div>

@@ -4,6 +4,7 @@ import { ArrowLeft, Upload, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useCategories } from '@/hooks/useCategories'
 import { useAdminCreateBook } from '@/hooks/useAdmin'
+import type { Category } from '@/types/category'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -107,10 +108,10 @@ export default function AddBook() {
                 className="w-full h-12 rounded-xl border border-gray-200 px-4 text-sm text-gray-700 bg-white appearance-none focus:outline-none focus:border-blue-400"
               >
                 <option value="">Select Category</option>
-                {categories
-                  .filter((cat: any) => CATEGORY_ORDER.includes(cat.name))
-                  .sort((a: any, b: any) => CATEGORY_ORDER.indexOf(a.name) - CATEGORY_ORDER.indexOf(b.name))
-                  .map((cat: any) => (
+                {(categories as Category[])
+                  .filter((cat) => CATEGORY_ORDER.includes(cat.name))
+                  .sort((a, b) => CATEGORY_ORDER.indexOf(a.name) - CATEGORY_ORDER.indexOf(b.name))
+                  .map((cat: Category) => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
               </select>
