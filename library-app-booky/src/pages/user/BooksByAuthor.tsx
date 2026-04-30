@@ -20,7 +20,7 @@ export default function BooksByAuthor() {
         <Avatar className="w-16 h-16">
           <AvatarImage src={author?.photo ?? ''} />
           <AvatarFallback className="text-lg font-bold bg-[var(--primary-200)] text-[var(--primary-300)]">
-            {author?.name?.charAt(0).toUpperCase()}
+            {author?.name?.charAt(0).toUpperCase() ?? '?'}
           </AvatarFallback>
         </Avatar>
         <div>

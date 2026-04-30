@@ -24,6 +24,11 @@ export default function Checkout() {
   const [agreedReturn, setAgreedReturn] = useState(false)
   const [agreedPolicy, setAgreedPolicy] = useState(false)
 
+  if (!selectedIds.length) {
+    navigate(ROUTES.CART, { replace: true })
+    return null
+  }
+
   const items = ((cartData?.data?.items ?? []) as CartItem[]).filter((item) =>
     selectedIds.includes(item.id)
   )

@@ -122,8 +122,9 @@ function ProfileTab() {
   const [editing, setEditing] = useState(false)
 
   const handleUpdate = () => {
+    if (!name.trim()) { toast.error('Name cannot be empty'); return }
     updateProfile(
-      { name, phone },
+      { name: name.trim(), phone },
       {
         onSuccess: () => { toast.success('Profile updated!'); setEditing(false) },
         onError: () => toast.error('Failed to update profile'),
@@ -357,7 +358,7 @@ function ReviewsTab() {
                 className="space-y-3 border-b border-gray-100 pb-6">
                 <p className="text-sm text-gray-400">{formatDateTime(review.createdAt)}</p>
                 <div className="flex gap-3 cursor-pointer"
-                  onClick={() => navigate(ROUTES.BOOK_DETAIL(review.book?.id ?? 0))}>
+                  onClick={() => review.book?.id && navigate(ROUTES.BOOK_DETAIL(review.book.id))}>
                   <div className="w-14 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
                     {review.book?.coverImage ? (
                       <img src={review.book.coverImage} alt={review.book.title} className="w-full h-full object-cover" />

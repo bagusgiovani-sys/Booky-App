@@ -163,6 +163,8 @@ export default function Home() {
                 <div key={i} className="rounded-xl bg-gray-100 animate-pulse" style={{ aspectRatio: "2/3" }} />
               ))}
             </div>
+          ) : recommended?.length === 0 ? (
+            <p className="text-center text-gray-400 py-10">No books found</p>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {recommended?.map((book: Book, i: number) => (
