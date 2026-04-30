@@ -31,8 +31,8 @@ VITE_API_BASE_URL=<backend URL>
 ### State management split
 
 Two layers handle state:
-- **Redux** (`src/store/`) — `authSlice` (token + User object, persisted to localStorage), `cartSlice` (mirrors server cart for UI count/item display), `uiSlice` (searchQuery, activeFilter, activeTab). Auth is the only slice that persists.
-- **TanStack Query** — all server data. QueryClient is configured with `retry: 1` and `staleTime: 5 minutes` globally. Admin loans use `staleTime: 0, gcTime: 0` to always re-fetch.
+- **Redux** (`src/store/`) — only `authSlice` remains: stores token + User object, persisted to localStorage. It is the only slice.
+- **TanStack Query** — all server data including cart. QueryClient is configured with `retry: 1` and `staleTime: 5 minutes` globally. Admin loans use `staleTime: 0, gcTime: 0` to always re-fetch.
 
 ### Data fetching pattern
 
@@ -79,3 +79,10 @@ Framer Motion is used throughout. Pages use a shared `fadeUp` variants object wi
 ### Styling
 
 Tailwind CSS v4 via `@tailwindcss/vite`. shadcn/ui uses the `new-york` style with CSS variables and `neutral` base color. The `cn()` utility in `src/lib/utils.ts` merges class names (`clsx` + `tailwind-merge`).
+
+## Session Management
+
+When daily usage approaches ~90%+, before ending the session:
+1. Update `library-app-booky/progress.md` — move completed items to Done, add anything discovered to Up Next, and append a brief session summary at the bottom.
+2. Commit and push the updated `progress.md`.
+3. Then end the session.
