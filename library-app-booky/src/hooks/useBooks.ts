@@ -43,7 +43,7 @@ export const useRecommendedBooks = (params?: {
       const data = await api.get(ENDPOINTS.BOOKS_RECOMMEND, { params })
       return data
     },
-    select: (data: any) => data.data.books as Book[],
+    select: (data: { data: { books: Book[] } }) => data.data.books,
   })
 }
 

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import api from '@/services/api'
 import { setCredentials, logout } from '@/store/authSlice'
 import { ENDPOINTS, ROUTES } from '@/constants'
+import type { User } from '@/types/user'
 
 export const useLogin = () => {
   const dispatch = useDispatch()
@@ -14,7 +15,7 @@ export const useLogin = () => {
       const data = await api.post(ENDPOINTS.LOGIN, credentials)
       return data
     },
-    onSuccess: (data: any) => {
+    onSuccess: (data: { data: { token: string; user: User } }) => {
       dispatch(setCredentials({ token: data.data.token, user: data.data.user }))
       if (data.data.user.role === 'ADMIN') {
         navigate(ROUTES.ADMIN_DASHBOARD)
