@@ -5,6 +5,9 @@ import { useCategories } from "@/hooks/useCategories";
 import { useRecommendedBooks } from "@/hooks/useBooks";
 import { usePopularAuthors } from "@/hooks/useAuthors";
 import { ROUTES } from "@/constants";
+import type { Category } from "@/types/category";
+import type { Book } from "@/types/book";
+import type { PopularAuthor } from "@/types/author";
 import HeroBanner from "@/components/user/HeroBanner";
 import BookCard from "@/components/common/BookCard";
 import AuthorCard from "@/components/user/AuthorCard";
@@ -56,14 +59,9 @@ export default function Home() {
     return !sessionStorage.getItem(OPENER_KEY);
   });
 
-  const displayCategories = categories
-    ?.filter((cat: { id: number; name: string }) =>
-      CATEGORY_ORDER.includes(cat.name),
-    )
-    .sort(
-      (a: { name: string }, b: { name: string }) =>
-        CATEGORY_ORDER.indexOf(a.name) - CATEGORY_ORDER.indexOf(b.name),
-    );
+  const displayCategories = (categories as Category[] | undefined)
+    ?.filter((cat) => CATEGORY_ORDER.includes(cat.name))
+    .sort((a, b) => CATEGORY_ORDER.indexOf(a.name) - CATEGORY_ORDER.indexOf(b.name));
 
   const { data: recommended, isFetching } = useRecommendedBooks({
     by: "rating",
@@ -136,7 +134,7 @@ export default function Home() {
         {/* Categories - 3x2 on mobile, 6x1 on PC */}
         <motion.section custom={1} initial="hidden" animate="visible" variants={fadeUp}>
           <div className="grid grid-cols-3 gap-3 md:grid-cols-6">
-            {displayCategories?.map((cat: { id: number; name: string }, i: number) => (
+            {displayCategories?.map((cat: Category, i: number) => (
               <motion.button
                 key={cat.id}
                 onClick={() => handleCategoryClick(cat.id)}
@@ -161,7 +159,7 @@ export default function Home() {
         <motion.section custom={2} initial="hidden" animate="visible" variants={fadeUp}>
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
             {activeCategoryId
-              ? displayCategories?.find((c: { id: number }) => c.id === activeCategoryId)?.name
+              ? displayCategories?.find((c: Category) => c.id === activeCategoryId)?.name
               : "Recommendation"}
           </h2>
 
@@ -173,7 +171,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {recommended?.map((book: any, i: number) => (
+              {recommended?.map((book: Book, i: number) => (
                 <motion.div
                   key={book.id}
                   custom={i}
@@ -207,7 +205,7 @@ export default function Home() {
         <motion.section custom={3} initial="hidden" animate="visible" variants={fadeUp}>
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Popular Authors</h2>
           <div className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-4 md:overflow-visible">
-            {popularAuthors?.map((author: any, i: number) => (
+            {popularAuthors?.map((author: PopularAuthor, i: number) => (
               <motion.div
                 key={author.id}
                 custom={i}

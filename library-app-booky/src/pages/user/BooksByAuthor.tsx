@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { BookMarked } from 'lucide-react'
 import { useAuthorBooks } from '@/hooks/useAuthors'
 import { ROUTES } from '@/constants'
+import type { Book } from '@/types/book'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import BookCard from '@/components/common/BookCard'
 
@@ -38,7 +39,7 @@ export default function BooksByAuthor() {
           <p className="text-center text-gray-400 py-20">No books found</p>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {books.map((book: any) => (
+            {books.map((book: Book) => (
               <BookCard key={book.id} book={book} onClick={() => navigate(ROUTES.BOOK_DETAIL(book.id))} />
             ))}
           </div>
