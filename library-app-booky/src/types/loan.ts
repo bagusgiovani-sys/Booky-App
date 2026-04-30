@@ -13,6 +13,7 @@ export interface Loan {
   returnByMessage?: string
   book?: Book
   borrower?: User
+  user?: User
 }
 
 export interface CreateLoanPayload {

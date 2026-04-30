@@ -1,5 +1,6 @@
 import type { Author } from './author'
 import type { Category } from './category'
+import type { Review } from './review'
 
 export interface Book {
   id: number
@@ -12,11 +13,13 @@ export interface Book {
   reviewCount: number
   totalCopies: number
   availableCopies: number
+  totalPages: number | null
   borrowCount: number
   authorId: number
   categoryId: number
   author?: Author
   category?: Category
+  reviews?: Review[]
   createdAt: string
   updatedAt: string
 }
