@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import dayjs from "dayjs"
+import type { AxiosError } from "axios"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -24,4 +25,8 @@ export function formatRelativeTime(date: string) {
   if (diff === 1) return 'Yesterday'
   if (diff < 7) return `${diff} days ago`
   return formatDate(date)
+}
+
+export function getErrorMessage(err: unknown, fallback = 'Something went wrong'): string {
+  return (err as AxiosError<{ message: string }>)?.response?.data?.message ?? fallback
 }
