@@ -12,7 +12,7 @@ All structural and type-safety fixes applied to the codebase after the initial a
 ---
 
 ## Fix 2 — Split `constants/index.ts` into domain files
-**Status:** ⏳ Pending
+**Status:** ✅ Done
 
 **Files:**
 - `src/constants/endpoints.ts`
