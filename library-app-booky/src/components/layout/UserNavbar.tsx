@@ -24,7 +24,6 @@ export default function UserNavbar() {
   const logout = useLogout();
   const { user } = useSelector((state: RootState) => state.auth);
   const { data: cartData } = useCart();
-  const cart = cartData as any;
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -87,9 +86,9 @@ export default function UserNavbar() {
 
             <Link to={ROUTES.CART} className="relative text-gray-600">
               <ShoppingBag size={22} />
-              {cart?.data?.itemCount > 0 && (
+              {(cartData?.data?.itemCount ?? 0) > 0 && (
                 <span className="absolute -top-2 -right-2 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold bg-[#d9206e]">
-                  {cart.data.itemCount}
+                  {cartData?.data?.itemCount}
                 </span>
               )}
             </Link>
