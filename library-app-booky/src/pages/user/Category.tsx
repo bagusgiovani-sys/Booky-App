@@ -3,13 +3,13 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useBooks } from '@/hooks/useBooks'
 import { useCategories } from '@/hooks/useCategories'
 import { ROUTES } from '@/constants'
+import { CATEGORY_ORDER } from '@/constants/categories'
 import type { Category } from '@/types/category'
 import type { Book } from '@/types/book'
 import { Star, SlidersHorizontal, X } from 'lucide-react'
 import BookCard from '@/components/common/BookCard'
 import { Checkbox } from '@/components/ui/checkbox'
 
-const CATEGORY_ORDER = ['Fiction', 'Non-Fiction', 'Self-Improvement', 'Finance', 'Science', 'Education']
 
 export default function Category() {
   const navigate = useNavigate()

@@ -4,13 +4,13 @@ import { ArrowLeft, Upload, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useCategories } from '@/hooks/useCategories'
 import { useAdminCreateBook } from '@/hooks/useAdmin'
+import { CATEGORY_ORDER } from '@/constants/categories'
 import type { Category } from '@/types/category'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { motion } from 'framer-motion'
 
-const CATEGORY_ORDER = ['Fiction', 'Non-Fiction', 'Self-Improvement', 'Finance', 'Science', 'Education']
 
 export default function AddBook() {
   const navigate = useNavigate()

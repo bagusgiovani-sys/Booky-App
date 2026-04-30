@@ -5,6 +5,7 @@ import { useCategories } from "@/hooks/useCategories";
 import { useRecommendedBooks } from "@/hooks/useBooks";
 import { usePopularAuthors } from "@/hooks/useAuthors";
 import { ROUTES } from "@/constants";
+import { CATEGORY_ORDER } from "@/constants/categories";
 import type { Category } from "@/types/category";
 import type { Book } from "@/types/book";
 import type { PopularAuthor } from "@/types/author";
@@ -19,14 +20,7 @@ import ScienceIcon from "@/assets/icons/ScienceAndTechno.svg";
 import EducationIcon from "@/assets/icons/Education.svg";
 import logo from "@/assets/images/Logo.svg";
 
-const CATEGORY_ORDER = [
-  "Fiction",
-  "Non-Fiction",
-  "Self-Improvement",
-  "Finance",
-  "Science",
-  "Education",
-];
+
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },

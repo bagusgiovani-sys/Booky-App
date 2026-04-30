@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { Star, Search, X, Camera } from 'lucide-react'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
-import type { AxiosError } from 'axios'
 import type { RootState } from '@/store/index'
 import type { Loan } from '@/types/loan'
 import type { Review } from '@/types/review'
@@ -13,7 +12,7 @@ import { useCreateReview } from '@/hooks/useReviews'
 import { ROUTES } from '@/constants'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { formatDate, formatDateTime } from '@/lib/utils'
+import { formatDate, formatDateTime, getErrorMessage } from '@/lib/utils'
 
 type Tab = 'profile' | 'borrowed' | 'reviews'
 
@@ -55,7 +54,7 @@ function ReviewModal({ bookId, onClose }: { bookId: number; onClose: () => void 
       { bookId, star: rating, comment: comment.trim() },
       {
         onSuccess: () => { toast.success('Review submitted!'); onClose() },
-        onError: (err) => toast.error((err as AxiosError<{ message: string }>)?.response?.data?.message ?? 'Failed to submit review'),
+        onError: (err) => toast.error(getErrorMessage(err, 'Failed to submit review')),
       }
     )
   }
