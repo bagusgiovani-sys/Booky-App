@@ -4,13 +4,14 @@ import { Star, ChevronRight, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useBookDetail, useRecommendedBooks } from '@/hooks/useBooks'
-import { useBookReviews } from '@/hooks/useReviews'
 import { useAddToCart } from '@/hooks/useCart'
 import { useBorrowBook } from '@/hooks/useLoans'
 import { ROUTES } from '@/constants'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import BookCard from '@/components/common/BookCard'
 import { formatDateTime } from '@/lib/utils'
+import type { Review } from '@/types/review'
+import type { Book } from '@/types/book'
 
 const P300 = 'var(--color-primary-300)'
 const P200 = 'var(--color-primary-200)'
@@ -91,17 +92,15 @@ export default function BookDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const bookId = Number(id)
-  const [reviewPage] = useState(1)
   const [showBorrowModal, setShowBorrowModal] = useState(false)
 
   const { data: bookData, isLoading } = useBookDetail(bookId)
-  const { } = useBookReviews(bookId, { page: reviewPage, limit: 5 })
   const { data: relatedBooks } = useRecommendedBooks({ categoryId: bookData?.data?.categoryId, limit: 4 })
   const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart()
   const { mutate: borrowBook, isPending: isBorrowing } = useBorrowBook()
 
-  const book = bookData?.data
-  const reviews = book?.reviews ?? []
+  const book: Book | undefined = bookData?.data
+  const reviews: Review[] = book?.reviews ?? []
 
   if (isLoading) {
     return (
@@ -215,7 +214,7 @@ export default function BookDetail() {
           </div>
         </div>
         <div className="space-y-4">
-          {reviews.map((review: any, i: number) => (
+          {reviews.map((review: Review, i: number) => (
             <motion.div key={review.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: i * 0.07 }}
               className="bg-white rounded-2xl p-4 shadow-sm space-y-2">
@@ -244,7 +243,7 @@ export default function BookDetail() {
           transition={{ duration: 0.4, delay: 0.45 }} className="px-4 space-y-4">
           <h2 className="text-xl font-bold text-gray-900">Related Books</h2>
           <div className="grid grid-cols-2 gap-4">
-            {relatedBooks.filter((b: any) => b.id !== bookId).slice(0, 4).map((b: any) => (
+            {relatedBooks.filter((b: Book) => b.id !== bookId).slice(0, 4).map((b: Book) => (
               <BookCard key={b.id} book={b} onClick={() => navigate(ROUTES.BOOK_DETAIL(b.id))} />
             ))}
           </div>

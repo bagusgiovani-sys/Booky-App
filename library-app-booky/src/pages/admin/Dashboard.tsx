@@ -6,6 +6,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useAdminLoans, useAdminUsers, useAdminBooks, useDeleteBook, useAdminUpdateLoan } from '@/hooks/useAdmin'
 import DeleteBookModal from '@/components/admin/DeleteBookModal'
 import { ROUTES } from '@/constants'
+import type { Loan } from '@/types/loan'
+import type { User } from '@/types/user'
+import type { Book } from '@/types/book'
 import { Button } from '@/components/ui/button'
 import { formatDate, formatDateTime } from '@/lib/utils'
 import SearchBar from '@/components/common/SearchBar'
@@ -153,7 +156,7 @@ function BorrowedTab() {
         </motion.p>
       ) : (
         <motion.div variants={containerVariants} initial="hidden" animate="show" className="flex flex-col gap-3">
-          {loans.map((loan: any) => (
+          {(loans as Loan[]).map((loan: Loan) => (
             <motion.div key={loan.id} variants={itemVariants}
               className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
               {/* Status row */}
@@ -240,7 +243,7 @@ function UserTab() {
         </motion.p>
       ) : (
         <motion.div variants={containerVariants} initial="hidden" animate="show" className="flex flex-col gap-4">
-          {users.map((user: any, index: number) => (
+          {(users as User[]).map((user: User, index: number) => (
             <motion.div key={user.id} variants={itemVariants}
               className="flex flex-col gap-2 border-b border-gray-100 pb-4">
               {[
@@ -346,7 +349,7 @@ function BookListTab() {
           </motion.p>
         ) : (
           <motion.div variants={containerVariants} initial="hidden" animate="show">
-            {books.map((book: any, idx: number) => (
+            {(books as Book[]).map((book: Book, idx: number) => (
               <motion.div key={book.id} variants={itemVariants}
                 className={`flex items-center gap-4 px-5 py-4 ${idx !== books.length - 1 ? 'border-b border-gray-100' : ''}`}>
                 {/* Cover */}

@@ -4,7 +4,10 @@ import { useSelector } from 'react-redux'
 import { Star, Search, X, Camera } from 'lucide-react'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
+import type { AxiosError } from 'axios'
 import type { RootState } from '@/store/index'
+import type { Loan } from '@/types/loan'
+import type { Review } from '@/types/review'
 import { useMe, useUpdateProfile, useMyLoansProfile, useMyReviews } from '@/hooks/useMe'
 import { useCreateReview } from '@/hooks/useReviews'
 import { ROUTES } from '@/constants'
@@ -52,7 +55,7 @@ function ReviewModal({ bookId, onClose }: { bookId: number; onClose: () => void 
       { bookId, star: rating, comment: comment.trim() },
       {
         onSuccess: () => { toast.success('Review submitted!'); onClose() },
-        onError: (err: any) => toast.error(err?.response?.data?.message ?? 'Failed to submit review'),
+        onError: (err) => toast.error((err as AxiosError<{ message: string }>)?.response?.data?.message ?? 'Failed to submit review'),
       }
     )
   }
@@ -239,7 +242,7 @@ function BorrowedTab() {
     LATE: 'text-accent-red',
   }
 
-  const filtered = loans.filter((loan: any) =>
+  const filtered = (loans as Loan[]).filter((loan) =>
     loan.book?.title?.toLowerCase().includes(search.toLowerCase())
   )
 
@@ -272,7 +275,7 @@ function BorrowedTab() {
             className="text-center text-gray-400 py-10">No loans found</motion.p>
         ) : (
           <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-4">
-            {filtered.map((loan: any) => (
+            {filtered.map((loan: Loan) => (
               <motion.div key={loan.id} variants={fadeUp}
                 className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
@@ -350,12 +353,12 @@ function ReviewsTab() {
             className="text-center text-gray-400 py-10">No reviews yet</motion.p>
         ) : (
           <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-6">
-            {reviews.map((review: any) => (
+            {reviews.map((review: Review) => (
               <motion.div key={review.id} variants={fadeUp}
                 className="space-y-3 border-b border-gray-100 pb-6">
                 <p className="text-sm text-gray-400">{formatDateTime(review.createdAt)}</p>
                 <div className="flex gap-3 cursor-pointer"
-                  onClick={() => navigate(ROUTES.BOOK_DETAIL(review.book?.id))}>
+                  onClick={() => navigate(ROUTES.BOOK_DETAIL(review.book?.id ?? 0))}>
                   <div className="w-14 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
                     {review.book?.coverImage ? (
                       <img src={review.book.coverImage} alt={review.book.title} className="w-full h-full object-cover" />
@@ -371,7 +374,7 @@ function ReviewsTab() {
                     <p className="text-xs text-gray-500">{review.book?.author?.name}</p>
                   </div>
                 </div>
-                <StarRating rating={review.star ?? review.rating} />
+                <StarRating rating={review.star} />
                 <p className="text-sm text-gray-600 leading-relaxed">{review.comment}</p>
               </motion.div>
             ))}
