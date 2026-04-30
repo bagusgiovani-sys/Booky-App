@@ -74,15 +74,3 @@ export const useUpdateBook = (id: number) => {
   })
 }
 
-export const useDeleteBook = () => {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: async (id: number) => {
-      const data = await api.delete(ENDPOINTS.BOOK_DETAIL(id))
-      return data
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BOOKS] })
-    },
-  })
-}

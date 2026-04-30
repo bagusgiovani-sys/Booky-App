@@ -25,7 +25,7 @@ All structural and type-safety fixes applied to the codebase after the initial a
 ---
 
 ## Fix 3 — Break up `useAdmin.ts` god hook
-**Status:** ⏳ Pending
+**Status:** ✅ Done
 
 **Files:**
 - `src/hooks/admin/useAdminBooks.ts`
