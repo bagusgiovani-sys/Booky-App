@@ -11,7 +11,7 @@ Booky is a library management web app built with React + TypeScript + Vite. The 
 All commands run from inside `library-app-booky/`:
 
 ```bash
-npm run dev        # Start dev server
+npm run dev        # Start dev server (port 8080)
 npm run build      # Type-check + Vite build
 npm run lint       # ESLint
 npm run preview    # Preview production build
@@ -31,12 +31,16 @@ VITE_API_BASE_URL=<backend URL>
 ### State management split
 
 Two layers handle state:
-- **Redux** (`src/store/`) — auth session (`authSlice`), cart item count (`cartSlice`), and ephemeral UI state like search query and active tab (`uiSlice`). Auth token and user object are persisted to `localStorage`.
-- **TanStack Query** — all server data (books, authors, categories, loans, reviews, admin data). Custom hooks in `src/hooks/` wrap queries and mutations.
+- **Redux** (`src/store/`) — `authSlice` (token + User object, persisted to localStorage), `cartSlice` (mirrors server cart for UI count/item display), `uiSlice` (searchQuery, activeFilter, activeTab). Auth is the only slice that persists.
+- **TanStack Query** — all server data. QueryClient is configured with `retry: 1` and `staleTime: 5 minutes` globally. Admin loans use `staleTime: 0, gcTime: 0` to always re-fetch.
 
 ### Data fetching pattern
 
-Every API domain has a dedicated hook file in `src/hooks/` (e.g., `useBooks.ts`, `useLoans.ts`). These hooks use constants from `src/constants/index.ts` for both endpoint paths (`ENDPOINTS`) and query cache keys (`QUERY_KEYS`). The Axios instance in `src/services/api.ts` auto-attaches the Bearer token from Redux and dispatches `logout()` on 401 responses.
+Every API domain has a dedicated hook file in `src/hooks/` (e.g., `useBooks.ts`, `useLoans.ts`). Admin hooks live in `src/hooks/admin/` and re-export through `src/hooks/useAdmin.ts`. Hooks use `ENDPOINTS` and `QUERY_KEYS` from `src/constants/` (split into `endpoints.ts`, `queryKeys.ts`, `routes.ts`). The Axios instance in `src/services/api.ts` auto-attaches the Bearer token from Redux and dispatches `logout()` on 401.
+
+### API response shape
+
+Most list endpoints return `{ data: { items/books/categories/..., page, limit, total, totalPages } }`. The hook's `select` callback unwraps this: `(data) => data.data.books`. Single-resource endpoints return `{ data: <resource> }`, accessed via `bookData?.data`. The `PaginatedResponse<T>` generic in `src/types/api.ts` models the list shape.
 
 ### Route structure
 
@@ -55,6 +59,18 @@ src/components/
   user/       # user-facing feature components
   admin/      # admin-specific components
 ```
+
+### Type files
+
+All domain types live in `src/types/`. Key interfaces:
+- `Book` — includes optional `author`, `category`, `reviews` (populated on detail endpoint only)
+- `Loan` — status is `'BORROWED' | 'LATE' | 'RETURNED'`; admin mutations use `AdminCreateLoanPayload`
+- `PaginatedResponse<T>` / `ApiError` in `api.ts`
+- Mutation payloads are co-located with their domain type file (e.g., `CreateBookPayload` in `book.ts`)
+
+### Animation pattern
+
+Framer Motion is used throughout. Pages use a shared `fadeUp` variants object with `custom` delay per section. Modals use `AnimatePresence` + scale/opacity. Interactive cards use `whileHover` / `whileTap`.
 
 ### Path aliases
 
