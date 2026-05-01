@@ -18,33 +18,46 @@
 - [x] Typed API layer — `apiGet/Post/Put/Patch/Delete<T>` helpers in `api.ts`; `ApiResponse<T>` + `PageMeta` in `types/api.ts`; all 14 hook files updated
 - [x] Merge `AddBook.tsx` + `BookEdit.tsx` → `BookFormPage.tsx`; mode determined by `:id` param; also fixed `Author.photo`, `meta` guard in Dashboard + Category
 
-## Up Next — 10/10 Overhaul
+## Up Next
+
+- (nothing — 10/10 overhaul complete)
+
+## 10/10 Overhaul — All Done ✓
 
 ### Group 1: Code Correctness
-- [ ] **Fix routing structure** — move `/borrow-success` inside `UserRoutes`; align `Success.tsx` filename with usage; make `NotFound` the true catch-all
-- [ ] **Fix `PaginatedResponse<T>` type** — current shape `{ data: T[], ... }` doesn't match actual API `{ data: { books: T[], page, ... } }`; restructure or rename to eliminate the mismatch
+- [x] **Fix routing structure** — `Success.tsx` → `BorrowSuccess.tsx`; `/borrow-success` moved into `UserRoutes` (auth + layout); `UserRoutes` catch-all now shows `<NotFound />`; orphaned top-level routes removed
+- [x] **Fix `PaginatedResponse<T>` type** — removed dead/wrong-shaped type; hooks already used `ApiResponse<{books:T[]} & PageMeta>` correctly
 
 ### Group 2: Resilience
-- [ ] **Add Error Boundaries** — wrap app and each route section so runtime render errors don't crash the whole UI; show a friendly fallback
+- [x] **Add Error Boundaries** — `ErrorBoundary` class component wraps the full app in `main.tsx`; renders friendly fallback with Try again + Refresh buttons
 
 ### Group 3: Admin Layer
-- [ ] **Break out `Dashboard.tsx`** — extract stat cards, loan table, users table into dedicated components under `components/admin/`
+- [x] **Break out `Dashboard.tsx`** — extracted `BorrowedTab`, `UserTab`, `BookListTab`, `FilterPill`, `ReturnButton`, `LoanCardSkeleton`, `BookRowSkeleton` into `components/admin/`; Dashboard.tsx reduced from 464 → 47 lines
 
 ### Group 4: UX Polish
-- [ ] **Skeleton loading states** — replace generic spinners with skeleton screens (BookCard skeletons, table row skeletons, profile skeletons)
-- [ ] **Consistent empty states** — reusable `EmptyState` component used across all empty list views
+- [x] **Skeleton loading states** — `Skeleton` (animated pulse), `BookCardSkeleton` added to `components/common/`; `BooksByAuthor` and `Cart` now have loading skeletons; `Home` migrated from inline `animate-pulse` to `BookCardSkeleton`
+- [x] **Consistent empty states** — `EmptyState` component (`icon + title + description`) replaces bare text across Home, BooksByAuthor, Cart
 
 ### Group 5: Performance
-- [ ] **Route lazy loading** — wrap all page components in `React.lazy` + `Suspense` to reduce initial bundle size
+- [x] **Route lazy loading** — all pages wrapped in `React.lazy` + `Suspense`; each page is now a separate JS chunk; `PageLoader` spinner as fallback
 
 ### Group 6: Code Clarity
-- [ ] **`constants/index.ts` barrel cleanup** — make explicit it's a re-export barrel or remove if redundant; add a comment so it's never mistaken for a config file
+- [x] **`constants/index.ts` barrel cleanup** — added barrel comment
 
 ---
 
 ## Session Notes
 
-### 2026-05-01
+### 2026-05-01 (session 2 — 10/10 overhaul)
+- Group 1: Fixed routing (BorrowSuccess.tsx rename, moved into UserRoutes, NotFound catch-all), removed dead PaginatedResponse<T> type, constants barrel comment
+- Group 2: Added ErrorBoundary wrapping full app with friendly fallback UI
+- Group 3: Broke out Dashboard.tsx (464→47 lines) into 7 admin components + Skeleton in common
+- Group 4: Added EmptyState + BookCardSkeleton components; added loading skeletons to BooksByAuthor + Cart; migrated Home inline pulse to BookCardSkeleton
+- Group 5: Lazy-loaded all page routes with React.lazy + Suspense; added PageLoader; every page is now a separate JS chunk
+- Group 6: Constants barrel comment
+- All builds clean throughout
+
+### 2026-05-01 (session 1)
 - Typed API layer: added `apiGet/Post/Put/Patch/Delete<T>` to `api.ts`; `ApiResponse<T>` + `PageMeta` to `types/api.ts`; updated all 14 hook files
 - Merged `AddBook.tsx` + `BookEdit.tsx` into `BookFormPage.tsx`; both admin routes now use single component
 - Fixed bonus issues surfaced by tighter types: added `photo` to `Author` type, fixed `meta` undefined guard in Dashboard + Category
