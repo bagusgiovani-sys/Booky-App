@@ -9,7 +9,7 @@ export interface Loan {
   displayStatus: string
   borrowedAt: string
   dueAt: string
-  durationDays: number
+  durationDays?: number
   returnByMessage?: string
   book?: Book
   borrower?: User

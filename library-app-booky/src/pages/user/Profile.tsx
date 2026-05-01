@@ -302,12 +302,19 @@ function BorrowedTab() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0 space-y-1">
-                    <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded-full border border-gray-300 text-gray-500">
-                      {loan.book?.category?.name}
-                    </span>
+                    {loan.book?.category?.name && (
+                      <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded-full border border-gray-300 text-gray-500">
+                        {loan.book.category.name}
+                      </span>
+                    )}
                     <p className="text-sm font-bold text-gray-900">{loan.book?.title}</p>
-                    <p className="text-xs text-gray-500">{loan.book?.author?.name}</p>
-                    <p className="text-xs text-gray-400">{formatDate(loan.borrowedAt)} · Duration {loan.durationDays} Days</p>
+                    {loan.book?.author?.name && (
+                      <p className="text-xs text-gray-500">{loan.book.author.name}</p>
+                    )}
+                    <p className="text-xs text-gray-400">
+                      {formatDate(loan.borrowedAt)}
+                      {loan.durationDays != null && ` · Duration ${loan.durationDays} Days`}
+                    </p>
                   </div>
                 </div>
 
@@ -390,8 +397,9 @@ export default function ProfilePage() {
   const location = useLocation()
 
   const getInitialTab = (): Tab => {
-    if (location.pathname.includes('borrowed')) return 'borrowed'
-    if (location.pathname.includes('reviews')) return 'reviews'
+    const tab = new URLSearchParams(location.search).get('tab')
+    if (tab === 'borrowed') return 'borrowed'
+    if (tab === 'reviews') return 'reviews'
     return 'profile'
   }
 
