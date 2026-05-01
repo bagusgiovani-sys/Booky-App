@@ -21,6 +21,7 @@ export const ROUTES = {
   ADMIN_BOOK_PREVIEW: (id: number) => `/admin/books/${id}/preview`,
 
   // Borrow
+  SEARCH: "/search",
   BORROW_SUCCESS: "/borrow-success",
 
   // Other

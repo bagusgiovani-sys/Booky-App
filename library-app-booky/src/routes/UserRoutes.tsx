@@ -14,6 +14,7 @@ const Cart = lazy(() => import('@/pages/user/Cart'))
 const Checkout = lazy(() => import('@/pages/user/Checkout'))
 const Profile = lazy(() => import('@/pages/user/Profile'))
 const BorrowSuccess = lazy(() => import('@/pages/user/BorrowSuccess'))
+const SearchPage = lazy(() => import('@/pages/user/Search'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
 
 export default function UserRoutes() {
@@ -34,6 +35,7 @@ export default function UserRoutes() {
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="search" element={<SearchPage />} />
           <Route path="borrow-success" element={<BorrowSuccess />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
