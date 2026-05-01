@@ -18,9 +18,11 @@
 - [x] Typed API layer — `apiGet/Post/Put/Patch/Delete<T>` helpers in `api.ts`; `ApiResponse<T>` + `PageMeta` in `types/api.ts`; all 14 hook files updated
 - [x] Merge `AddBook.tsx` + `BookEdit.tsx` → `BookFormPage.tsx`; mode determined by `:id` param; also fixed `Author.photo`, `meta` guard in Dashboard + Category
 
+- [x] **Playwright bug sweep** — tested Category, BooksByAuthor, BookDetail, Cart, Checkout, Profile, Search; found and fixed 4 more bugs (see 2026-05-01 session 3 notes)
+
 ## Up Next
 
-- (nothing — 10/10 overhaul complete)
+- (nothing queued)
 
 ## 10/10 Overhaul — All Done ✓
 
@@ -47,6 +49,16 @@
 ---
 
 ## Session Notes
+
+### 2026-05-01 (session 3 — Playwright bug sweep)
+- Category page: filter drawer opens correctly, Fiction filter works, books update — no bugs
+- BooksByAuthor (author ID 19 / Zayn Mifta): author card + 10 books render correctly — no bugs
+- BookDetail: all sections (cover, stats, reviews, related books, action buttons) correct — no bugs
+- Cart: Select All + count update + navigate to Checkout — no bugs
+- Checkout: user info pre-filled, 3 books listed, return date calculation correct, button disabled without terms — no bugs
+- Profile: verified 3 fixes from prev session — durationDays guard ✓, category/author conditional render ✓, ?tab=borrowed deep link ✓
+- Search: **Bug** — /search?q= route missing → NotFound page. Fixed: created Search.tsx page + added route + ROUTES.SEARCH constant
+- Cart badge on Profile confirmed working (was a one-off in prior session)
 
 ### 2026-05-01 (session 2 — 10/10 overhaul)
 - Group 1: Fixed routing (BorrowSuccess.tsx rename, moved into UserRoutes, NotFound catch-all), removed dead PaginatedResponse<T> type, constants barrel comment
