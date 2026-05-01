@@ -50,6 +50,9 @@
 
 ## Session Notes
 
+### 2026-05-02
+- Revamped `fixes.md` — 70 → 170 lines; added exact `src/` file paths for every change, grouped into 5 sections (TypeScript, Architecture, New Components, Bug Fixes, DX); added missing routes folder refactor and all prior sessions' changes that were undocumented
+
 ### 2026-05-01 (session 3 — Playwright bug sweep)
 - Category page: filter drawer opens correctly, Fiction filter works, books update — no bugs
 - BooksByAuthor (author ID 19 / Zayn Mifta): author card + 10 books render correctly — no bugs
