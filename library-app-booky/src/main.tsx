@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/sonner'
 import { store } from '@/store/index'
+import ErrorBoundary from '@/components/common/ErrorBoundary'
 import App from './App.tsx'
 import './index.css'
 
@@ -22,7 +23,9 @@ createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <App />
+          <ErrorBoundary>
+            <App />
+          </ErrorBoundary>
           <Toaster richColors position="top-right" />
         </BrowserRouter>
       </QueryClientProvider>
