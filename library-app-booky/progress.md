@@ -18,9 +18,27 @@
 - [x] Typed API layer — `apiGet/Post/Put/Patch/Delete<T>` helpers in `api.ts`; `ApiResponse<T>` + `PageMeta` in `types/api.ts`; all 14 hook files updated
 - [x] Merge `AddBook.tsx` + `BookEdit.tsx` → `BookFormPage.tsx`; mode determined by `:id` param; also fixed `Author.photo`, `meta` guard in Dashboard + Category
 
-## Up Next
+## Up Next — 10/10 Overhaul
 
-- (nothing — all tracked items complete)
+### Group 1: Code Correctness
+- [ ] **Fix routing structure** — move `/borrow-success` inside `UserRoutes`; align `Success.tsx` filename with usage; make `NotFound` the true catch-all
+- [ ] **Fix `PaginatedResponse<T>` type** — current shape `{ data: T[], ... }` doesn't match actual API `{ data: { books: T[], page, ... } }`; restructure or rename to eliminate the mismatch
+
+### Group 2: Resilience
+- [ ] **Add Error Boundaries** — wrap app and each route section so runtime render errors don't crash the whole UI; show a friendly fallback
+
+### Group 3: Admin Layer
+- [ ] **Break out `Dashboard.tsx`** — extract stat cards, loan table, users table into dedicated components under `components/admin/`
+
+### Group 4: UX Polish
+- [ ] **Skeleton loading states** — replace generic spinners with skeleton screens (BookCard skeletons, table row skeletons, profile skeletons)
+- [ ] **Consistent empty states** — reusable `EmptyState` component used across all empty list views
+
+### Group 5: Performance
+- [ ] **Route lazy loading** — wrap all page components in `React.lazy` + `Suspense` to reduce initial bundle size
+
+### Group 6: Code Clarity
+- [ ] **`constants/index.ts` barrel cleanup** — make explicit it's a re-export barrel or remove if redundant; add a comment so it's never mistaken for a config file
 
 ---
 

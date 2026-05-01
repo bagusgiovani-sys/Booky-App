@@ -80,6 +80,16 @@ Framer Motion is used throughout. Pages use a shared `fadeUp` variants object wi
 
 Tailwind CSS v4 via `@tailwindcss/vite`. shadcn/ui uses the `new-york` style with CSS variables and `neutral` base color. The `cn()` utility in `src/lib/utils.ts` merges class names (`clsx` + `tailwind-merge`).
 
+## Git
+
+After every major change (feature complete, significant refactor, milestone item from progress.md):
+```bash
+git add <files>
+git commit -m "<message>"
+git push -u origin main
+```
+Never batch multiple milestones into one push — commit and push each one as it's done.
+
 ## Session Management
 
 When daily usage approaches ~90%+, before ending the session:
