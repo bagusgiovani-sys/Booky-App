@@ -10,6 +10,8 @@ import BooksByAuthor from '@/pages/user/BooksByAuthor'
 import Cart from '@/pages/user/Cart'
 import Checkout from '@/pages/user/Checkout'
 import Profile from '@/pages/user/Profile'
+import BorrowSuccess from '@/pages/user/BorrowSuccess'
+import NotFound from '@/pages/NotFound'
 
 export default function UserRoutes() {
   const { token } = useSelector((state: RootState) => state.auth)
@@ -28,7 +30,8 @@ export default function UserRoutes() {
         <Route path="cart" element={<Cart />} />
         <Route path="checkout" element={<Checkout />} />
         <Route path="profile" element={<Profile />} />
-        <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
+        <Route path="borrow-success" element={<BorrowSuccess />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </UserLayout>
   )
