@@ -11,6 +11,8 @@ import type { Book } from "@/types/book";
 import type { PopularAuthor } from "@/types/author";
 import HeroBanner from "@/components/user/HeroBanner";
 import BookCard from "@/components/common/BookCard";
+import BookCardSkeleton from "@/components/common/BookCardSkeleton";
+import EmptyState from "@/components/common/EmptyState";
 import AuthorCard from "@/components/user/AuthorCard";
 import FictionIcon from "@/assets/icons/FictionIcon.svg";
 import NonFictionIcon from "@/assets/icons/NonFiction.svg";
@@ -159,12 +161,10 @@ export default function Home() {
 
           {isFetching ? (
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {[...Array(10)].map((_, i) => (
-                <div key={i} className="rounded-xl bg-gray-100 animate-pulse" style={{ aspectRatio: "2/3" }} />
-              ))}
+              {[...Array(10)].map((_, i) => <BookCardSkeleton key={i} />)}
             </div>
           ) : recommended?.length === 0 ? (
-            <p className="text-center text-gray-400 py-10">No books found</p>
+            <EmptyState icon="📚" title="No books found" description="Try selecting a different category." />
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {recommended?.map((book: Book, i: number) => (

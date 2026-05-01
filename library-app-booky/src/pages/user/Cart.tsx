@@ -8,13 +8,15 @@ import { Button } from '@/components/ui/button'
 import { Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
+import Skeleton from '@/components/common/Skeleton'
+import EmptyState from '@/components/common/EmptyState'
 
 const P300 = 'var(--color-primary-300)'
 const P200 = 'var(--color-primary-200)'
 
 export default function Cart() {
   const navigate = useNavigate()
-  const { data: cartData } = useCart()
+  const { data: cartData, isLoading } = useCart()
   const { mutate: removeFromCart } = useRemoveFromCart()
 
   const items = cartData?.data?.items ?? []
@@ -70,13 +72,20 @@ export default function Cart() {
 
       {/* Cart Items */}
       <div className="space-y-3">
-        {items.length === 0 ? (
-          <motion.p
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="text-center text-gray-400 py-20"
-          >
-            Your cart is empty
-          </motion.p>
+        {isLoading ? (
+          [...Array(3)].map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm">
+              <Skeleton className="w-5 h-5 rounded" />
+              <Skeleton className="w-16 h-20 rounded-xl shrink-0" />
+              <div className="flex-1 flex flex-col gap-2">
+                <Skeleton className="h-3 w-1/4" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
+            </div>
+          ))
+        ) : items.length === 0 ? (
+          <EmptyState icon="🛒" title="Your cart is empty" description="Add some books to get started." />
         ) : (
           <AnimatePresence>
             {items.map((item: CartItem, i: number) => (
