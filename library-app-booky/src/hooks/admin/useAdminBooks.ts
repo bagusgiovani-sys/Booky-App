@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import api from '@/services/api'
+import { apiGet, apiPost, apiPut, apiDelete } from '@/services/api'
 import { ENDPOINTS, QUERY_KEYS } from '@/constants'
+import type { Book } from '@/types/book'
+import type { ApiResponse, PageMeta } from '@/types/api'
 
 export const useAdminBooks = (params?: {
   status?: 'all' | 'available' | 'borrowed' | 'returned'
@@ -12,22 +14,17 @@ export const useAdminBooks = (params?: {
 }) => {
   return useQuery({
     queryKey: [QUERY_KEYS.ADMIN_BOOKS, params],
-    queryFn: async () => {
-      const data = await api.get(ENDPOINTS.ADMIN_BOOKS, { params })
-      return data
-    },
+    queryFn: () => apiGet<ApiResponse<{ books: Book[] } & PageMeta>>(ENDPOINTS.ADMIN_BOOKS, { params }),
   })
 }
 
 export const useAdminCreateBook = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (payload: FormData) => {
-      const data = await api.post(ENDPOINTS.BOOKS, payload, {
+    mutationFn: (payload: FormData) =>
+      apiPost(ENDPOINTS.BOOKS, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
-      })
-      return data
-    },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN_BOOKS] })
     },
@@ -37,12 +34,10 @@ export const useAdminCreateBook = () => {
 export const useAdminUpdateBook = (id: number) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (payload: FormData) => {
-      const data = await api.put(ENDPOINTS.BOOK_DETAIL(id), payload, {
+    mutationFn: (payload: FormData) =>
+      apiPut(ENDPOINTS.BOOK_DETAIL(id), payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
-      })
-      return data
-    },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN_BOOKS] })
     },
@@ -52,10 +47,7 @@ export const useAdminUpdateBook = (id: number) => {
 export const useDeleteBook = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (id: number) => {
-      const data = await api.delete(ENDPOINTS.BOOK_DETAIL(id))
-      return data
-    },
+    mutationFn: (id: number) => apiDelete(ENDPOINTS.BOOK_DETAIL(id)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN_BOOKS] })
     },

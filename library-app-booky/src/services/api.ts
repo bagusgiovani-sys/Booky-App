@@ -1,4 +1,5 @@
 import axios from 'axios'
+import type { AxiosRequestConfig } from 'axios'
 import { store } from '@/store/index'
 import { logout } from '@/store/authSlice'
 
@@ -26,5 +27,20 @@ api.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+export const apiGet = <T>(url: string, config?: AxiosRequestConfig): Promise<T> =>
+  api.get<T, T>(url, config)
+
+export const apiPost = <T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> =>
+  api.post<T, T>(url, data, config)
+
+export const apiPut = <T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> =>
+  api.put<T, T>(url, data, config)
+
+export const apiPatch = <T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> =>
+  api.patch<T, T>(url, data, config)
+
+export const apiDelete = <T>(url: string, config?: AxiosRequestConfig): Promise<T> =>
+  api.delete<T, T>(url, config)
 
 export default api

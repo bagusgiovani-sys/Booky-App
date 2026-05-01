@@ -1,34 +1,27 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import api from '@/services/api'
+import { apiGet, apiPost, apiDelete } from '@/services/api'
 import { ENDPOINTS, QUERY_KEYS } from '@/constants'
+import type { Cart } from '@/types/cart'
+import type { ApiResponse } from '@/types/api'
 
 export const useCart = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.CART],
-    queryFn: async () => {
-      const data = await api.get(ENDPOINTS.CART)
-      return data
-    },
+    queryFn: () => apiGet<ApiResponse<Cart>>(ENDPOINTS.CART),
   })
 }
 
 export const useCartCheckout = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.CART_CHECKOUT],
-    queryFn: async () => {
-      const data = await api.get(ENDPOINTS.CART_CHECKOUT)
-      return data
-    },
+    queryFn: () => apiGet<ApiResponse<Cart>>(ENDPOINTS.CART_CHECKOUT),
   })
 }
 
 export const useAddToCart = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (bookId: number) => {
-      const data = await api.post(ENDPOINTS.CART_ITEMS, { bookId })
-      return data
-    },
+    mutationFn: (bookId: number) => apiPost(ENDPOINTS.CART_ITEMS, { bookId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CART] })
     },
@@ -38,10 +31,7 @@ export const useAddToCart = () => {
 export const useRemoveFromCart = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (itemId: number) => {
-      const data = await api.delete(ENDPOINTS.CART_ITEM(itemId))
-      return data
-    },
+    mutationFn: (itemId: number) => apiDelete(ENDPOINTS.CART_ITEM(itemId)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CART] })
     },
@@ -51,10 +41,7 @@ export const useRemoveFromCart = () => {
 export const useClearCart = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async () => {
-      const data = await api.delete(ENDPOINTS.CART)
-      return data
-    },
+    mutationFn: () => apiDelete(ENDPOINTS.CART),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CART] })
     },

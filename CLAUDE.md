@@ -86,3 +86,4 @@ When daily usage approaches ~90%+, before ending the session:
 1. Update `library-app-booky/progress.md` — move completed items to Done, add anything discovered to Up Next, and append a brief session summary at the bottom.
 2. Commit and push the updated `progress.md`.
 3. Then end the session.
+4. When user says "continue the project" or something similar, then check progress.md to see what's next

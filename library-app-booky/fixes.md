@@ -61,9 +61,9 @@ Add API response shape, admin hooks location, type file breakdown, animation pat
 
 These are non-blocking quality improvements worth tracking:
 
-- [ ] **Typed API layer** — `api.ts` response interceptor currently returns untyped `any`. Add a generic helper (e.g., `apiGet<T>`) so hooks get typed responses automatically instead of casting.
+- [x] **Typed API layer** — `api.ts` response interceptor currently returns untyped `any`. Added `apiGet<T>`, `apiPost<T>`, `apiPut<T>`, `apiPatch<T>`, `apiDelete<T>` helpers; added `ApiResponse<T>` and `PageMeta` to `types/api.ts`; updated all 14 hook files.
 - [x] **Remove `uiSlice`** — Was never dispatched or read; deleted.
 - [x] **Remove `cartSlice`** — Was never dispatched or read; deleted. Navbar reads cart directly via `useCart()`.
 - [x] **`CATEGORY_ORDER` constant** — Extracted to `src/constants/categories.ts`, removed 4 duplicate declarations.
 - [x] **Error type helper** — `getErrorMessage(err, fallback?)` added to `src/lib/utils.ts`.
-- [ ] **`BookEdit.tsx` vs `AddBook.tsx`** — These two pages share ~90% of their UI and logic. Merge into a single `BookForm` component.
+- [x] **`BookEdit.tsx` vs `AddBook.tsx`** — Merged into `BookFormPage.tsx`; both routes now use a single component that detects add vs edit via the `:id` param.

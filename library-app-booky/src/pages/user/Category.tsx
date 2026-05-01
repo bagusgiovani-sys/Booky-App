@@ -135,7 +135,7 @@ export default function Category() {
             </div>
           )}
 
-          {meta?.totalPages > page && (
+          {!!meta && meta.totalPages > page && (
             <button
               onClick={() => setPage(p => p + 1)}
               className="w-full mt-6 py-3 rounded-xl font-semibold text-sm bg-[var(--primary-200)] text-[var(--primary-300)]"

@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import api from '@/services/api'
+import { apiGet, apiPost, apiPut } from '@/services/api'
 import { ENDPOINTS, QUERY_KEYS } from '@/constants'
 import type { Book, CreateBookPayload, UpdateBookPayload } from '@/types/book'
+import type { ApiResponse, PageMeta } from '@/types/api'
 
 export const useBooks = (params?: {
   q?: string
@@ -13,20 +14,14 @@ export const useBooks = (params?: {
 }) => {
   return useQuery({
     queryKey: [QUERY_KEYS.BOOKS, params],
-    queryFn: async () => {
-      const data = await api.get(ENDPOINTS.BOOKS, { params })
-      return data
-    },
+    queryFn: () => apiGet<ApiResponse<{ books: Book[] } & PageMeta>>(ENDPOINTS.BOOKS, { params }),
   })
 }
 
 export const useBookDetail = (id: number) => {
   return useQuery({
     queryKey: [QUERY_KEYS.BOOK_DETAIL, id],
-    queryFn: async () => {
-      const data = await api.get(ENDPOINTS.BOOK_DETAIL(id))
-      return data
-    },
+    queryFn: () => apiGet<ApiResponse<Book>>(ENDPOINTS.BOOK_DETAIL(id)),
     enabled: !!id,
   })
 }
@@ -39,21 +34,15 @@ export const useRecommendedBooks = (params?: {
 }) => {
   return useQuery({
     queryKey: [QUERY_KEYS.BOOKS_RECOMMEND, params],
-    queryFn: async () => {
-      const data = await api.get(ENDPOINTS.BOOKS_RECOMMEND, { params })
-      return data
-    },
-    select: (data: { data: { books: Book[] } }) => data.data.books,
+    queryFn: () => apiGet<ApiResponse<{ books: Book[] }>>(ENDPOINTS.BOOKS_RECOMMEND, { params }),
+    select: (data) => data.data.books,
   })
 }
 
 export const useCreateBook = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (payload: CreateBookPayload) => {
-      const data = await api.post(ENDPOINTS.BOOKS, payload)
-      return data
-    },
+    mutationFn: (payload: CreateBookPayload) => apiPost(ENDPOINTS.BOOKS, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BOOKS] })
     },
@@ -63,14 +52,10 @@ export const useCreateBook = () => {
 export const useUpdateBook = (id: number) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (payload: UpdateBookPayload) => {
-      const data = await api.put(ENDPOINTS.BOOK_DETAIL(id), payload)
-      return data
-    },
+    mutationFn: (payload: UpdateBookPayload) => apiPut(ENDPOINTS.BOOK_DETAIL(id), payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BOOKS] })
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BOOK_DETAIL, id] })
     },
   })
 }
-

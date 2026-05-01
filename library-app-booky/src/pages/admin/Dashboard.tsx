@@ -263,7 +263,7 @@ function UserTab() {
         </motion.div>
       )}
 
-      {meta?.totalPages > 1 && (
+      {!!meta && meta.totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 pt-4">
           <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
             className="text-sm text-gray-500 disabled:opacity-40 cursor-pointer">

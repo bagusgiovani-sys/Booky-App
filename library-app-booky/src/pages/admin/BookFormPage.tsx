@@ -1,9 +1,10 @@
-import { useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Upload, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { useBookDetail } from '@/hooks/useBooks'
 import { useCategories } from '@/hooks/useCategories'
-import { useAdminCreateBook } from '@/hooks/useAdmin'
+import { useAdminCreateBook, useAdminUpdateBook } from '@/hooks/useAdmin'
 import { CATEGORY_ORDER } from '@/constants/categories'
 import type { Category } from '@/types/category'
 import { Button } from '@/components/ui/button'
@@ -11,15 +12,21 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { motion } from 'framer-motion'
 
-
-export default function AddBook() {
+export default function BookFormPage() {
+  const { id } = useParams()
   const navigate = useNavigate()
-  const { data: categoriesData } = useCategories()
-  const { mutate: createBook, isPending } = useAdminCreateBook()
+  const isEdit = !!id
 
-  const categories = categoriesData ?? []
+  const { data: bookData } = useBookDetail(isEdit ? Number(id) : 0)
+  const { data: categories } = useCategories()
+  const { mutate: createBook, isPending: isCreating } = useAdminCreateBook()
+  const { mutate: updateBook, isPending: isUpdating } = useAdminUpdateBook(Number(id))
+
+  const isPending = isCreating || isUpdating
+  const book = bookData?.data
 
   const [title, setTitle] = useState('')
+  const [isbn, setIsbn] = useState('')
   const [author, setAuthor] = useState('')
   const [categoryId, setCategoryId] = useState<number | ''>('')
   const [totalPages, setTotalPages] = useState('')
@@ -27,6 +34,18 @@ export default function AddBook() {
   const [coverPreview, setCoverPreview] = useState<string | null>(null)
   const [coverFile, setCoverFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (book && isEdit) {
+      setTitle(book.title ?? '')
+      setIsbn(book.isbn ?? `ISBN-${Date.now()}`)
+      setAuthor(book.author?.name ?? '')
+      setCategoryId(book.categoryId ?? '')
+      setTotalPages(book.totalPages?.toString() ?? '')
+      setDescription(book.description ?? '')
+      setCoverPreview(book.coverImage ?? null)
+    }
+  }, [book, isEdit])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -36,32 +55,39 @@ export default function AddBook() {
     setCoverPreview(URL.createObjectURL(file))
   }
 
-  const handleSave = () => {
-    if (!title || !categoryId) {
-      toast.error('Title and category are required')
-      return
-    }
+  const buildFormData = () => {
     const formData = new FormData()
-    formData.append('isbn', `ISBN-${Date.now()}`)
+    formData.append('isbn', isbn || `ISBN-${Date.now()}`)
     formData.append('title', title)
     formData.append('authorName', author)
     formData.append('categoryId', String(categoryId))
     formData.append('totalPages', totalPages)
     formData.append('description', description)
     if (coverFile) formData.append('coverImage', coverFile)
+    return formData
+  }
 
-    createBook(formData, {
-      onSuccess: () => {
-        toast.success('Book added!')
-        navigate(-1)
-      },
-      onError: () => toast.error('Failed to add book'),
-    })
+  const handleSave = () => {
+    if (!title || !categoryId) {
+      toast.error('Title and category are required')
+      return
+    }
+    const formData = buildFormData()
+    if (isEdit) {
+      updateBook(formData, {
+        onSuccess: () => { toast.success('Book updated!'); navigate(-1) },
+        onError: () => toast.error('Failed to update book'),
+      })
+    } else {
+      createBook(formData, {
+        onSuccess: () => { toast.success('Book added!'); navigate(-1) },
+        onError: () => toast.error('Failed to add book'),
+      })
+    }
   }
 
   return (
     <div className="pb-10">
-      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -71,10 +97,9 @@ export default function AddBook() {
         <button onClick={() => navigate(-1)} className="text-gray-700">
           <ArrowLeft size={20} />
         </button>
-        <h1 className="text-lg font-bold text-gray-900">Add Book</h1>
+        <h1 className="text-lg font-bold text-gray-900">{isEdit ? 'Edit Book' : 'Add Book'}</h1>
       </motion.div>
 
-      {/* Main Form - Centered on PC */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -82,23 +107,20 @@ export default function AddBook() {
         className="max-w-2xl mx-auto px-4"
       >
         <div className="space-y-4">
-          {/* Title */}
           <div className="space-y-2">
             <Label className="text-sm font-semibold text-gray-700">Title</Label>
             <Input value={title} onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter book title"
+              placeholder={isEdit ? undefined : 'Enter book title'}
               className="h-12 rounded-xl border-gray-200" />
           </div>
 
-          {/* Author */}
           <div className="space-y-2">
             <Label className="text-sm font-semibold text-gray-700">Author</Label>
             <Input value={author} onChange={(e) => setAuthor(e.target.value)}
-              placeholder="Enter author name"
+              placeholder={isEdit ? undefined : 'Enter author name'}
               className="h-12 rounded-xl border-gray-200" />
           </div>
 
-          {/* Category */}
           <div className="space-y-2">
             <Label className="text-sm font-semibold text-gray-700">Category</Label>
             <div className="relative">
@@ -108,7 +130,7 @@ export default function AddBook() {
                 className="w-full h-12 rounded-xl border border-gray-200 px-4 text-sm text-gray-700 bg-white appearance-none focus:outline-none focus:border-blue-400"
               >
                 <option value="">Select Category</option>
-                {(categories as Category[])
+                {(categories ?? [])
                   .filter((cat) => CATEGORY_ORDER.includes(cat.name))
                   .sort((a, b) => CATEGORY_ORDER.indexOf(a.name) - CATEGORY_ORDER.indexOf(b.name))
                   .map((cat: Category) => (
@@ -119,24 +141,21 @@ export default function AddBook() {
             </div>
           </div>
 
-          {/* Number of Pages */}
           <div className="space-y-2">
             <Label className="text-sm font-semibold text-gray-700">Number of Pages</Label>
             <Input type="number" value={totalPages} onChange={(e) => setTotalPages(e.target.value)}
-              placeholder="Enter number of pages"
+              placeholder={isEdit ? undefined : 'Enter number of pages'}
               className="h-12 rounded-xl border-gray-200" />
           </div>
 
-          {/* Description */}
           <div className="space-y-2">
             <Label className="text-sm font-semibold text-gray-700">Description</Label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter book description"
+              placeholder={isEdit ? undefined : 'Enter book description'}
               rows={5}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-blue-400 resize-none" />
           </div>
 
-          {/* Cover Image */}
           <div className="space-y-2">
             <Label className="text-sm font-semibold text-gray-700">Cover Image</Label>
             <input ref={fileInputRef} type="file" accept="image/png,image/jpeg"
@@ -174,10 +193,9 @@ export default function AddBook() {
             )}
           </div>
 
-          {/* Save */}
           <Button onClick={handleSave} disabled={isPending}
             className="w-full rounded-full py-6 font-semibold text-white bg-(--primary-300) hover:bg-(--primary-300)/90">
-            {isPending ? 'Adding...' : 'Save'}
+            {isPending ? (isEdit ? 'Saving...' : 'Adding...') : 'Save'}
           </Button>
         </div>
       </motion.div>

@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import api from '@/services/api'
+import { apiGet, apiPost, apiPatch } from '@/services/api'
 import { ENDPOINTS, QUERY_KEYS } from '@/constants'
-import type { CreateLoanPayload, CreateLoanFromCartPayload } from '@/types/loan'
+import type { Loan, CreateLoanPayload, CreateLoanFromCartPayload } from '@/types/loan'
+import type { ApiResponse, PageMeta } from '@/types/api'
 
 export const useMyLoans = (params?: {
   status?: 'all' | 'active' | 'returned' | 'overdue'
@@ -11,20 +12,14 @@ export const useMyLoans = (params?: {
 }) => {
   return useQuery({
     queryKey: [QUERY_KEYS.LOANS_MY, params],
-    queryFn: async () => {
-      const data = await api.get(ENDPOINTS.LOANS_MY, { params })
-      return data
-    },
+    queryFn: () => apiGet<ApiResponse<{ loans: Loan[] } & PageMeta>>(ENDPOINTS.LOANS_MY, { params }),
   })
 }
 
 export const useBorrowBook = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (payload: CreateLoanPayload) => {
-      const data = await api.post(ENDPOINTS.LOANS, payload)
-      return data
-    },
+    mutationFn: (payload: CreateLoanPayload) => apiPost(ENDPOINTS.LOANS, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LOANS_MY] })
     },
@@ -34,10 +29,7 @@ export const useBorrowBook = () => {
 export const useBorrowFromCart = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (payload: CreateLoanFromCartPayload) => {
-      const data = await api.post(ENDPOINTS.LOANS_FROM_CART, payload)
-      return data
-    },
+    mutationFn: (payload: CreateLoanFromCartPayload) => apiPost(ENDPOINTS.LOANS_FROM_CART, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LOANS_MY] })
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CART] })
@@ -48,10 +40,7 @@ export const useBorrowFromCart = () => {
 export const useReturnBook = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (id: number) => {
-      const data = await api.patch(ENDPOINTS.LOAN_RETURN(id))
-      return data
-    },
+    mutationFn: (id: number) => apiPatch(ENDPOINTS.LOAN_RETURN(id)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LOANS_MY] })
     },

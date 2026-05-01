@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import api from '@/services/api'
+import { apiGet, apiPost, apiPatch } from '@/services/api'
 import { ENDPOINTS, QUERY_KEYS } from '@/constants'
-import type { AdminCreateLoanPayload, UpdateLoanPayload } from '@/types/loan'
+import type { Loan, AdminCreateLoanPayload, UpdateLoanPayload } from '@/types/loan'
+import type { ApiResponse, PageMeta } from '@/types/api'
 
 export const useAdminLoans = (params?: {
   status?: 'all' | 'active' | 'returned' | 'overdue'
@@ -11,10 +12,7 @@ export const useAdminLoans = (params?: {
 }) => {
   return useQuery({
     queryKey: [QUERY_KEYS.ADMIN_LOANS, params],
-    queryFn: async () => {
-      const data = await api.get(ENDPOINTS.ADMIN_LOANS, { params })
-      return data
-    },
+    queryFn: () => apiGet<ApiResponse<{ loans: Loan[] } & PageMeta>>(ENDPOINTS.ADMIN_LOANS, { params }),
     staleTime: 0,
     gcTime: 0,
   })
@@ -26,20 +24,14 @@ export const useAdminOverdueLoans = (params?: {
 }) => {
   return useQuery({
     queryKey: [QUERY_KEYS.ADMIN_LOANS_OVERDUE, params],
-    queryFn: async () => {
-      const data = await api.get(ENDPOINTS.ADMIN_LOANS_OVERDUE, { params })
-      return data
-    },
+    queryFn: () => apiGet<ApiResponse<{ loans: Loan[] } & PageMeta>>(ENDPOINTS.ADMIN_LOANS_OVERDUE, { params }),
   })
 }
 
 export const useAdminCreateLoan = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (payload: AdminCreateLoanPayload) => {
-      const data = await api.post(ENDPOINTS.ADMIN_LOANS, payload)
-      return data
-    },
+    mutationFn: (payload: AdminCreateLoanPayload) => apiPost(ENDPOINTS.ADMIN_LOANS, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN_LOANS] })
     },
@@ -49,10 +41,7 @@ export const useAdminCreateLoan = () => {
 export const useAdminUpdateLoan = (id: number) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (payload: UpdateLoanPayload) => {
-      const data = await api.patch(ENDPOINTS.ADMIN_LOAN(id), payload)
-      return data
-    },
+    mutationFn: (payload: UpdateLoanPayload) => apiPatch(ENDPOINTS.ADMIN_LOAN(id), payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN_LOANS] })
     },

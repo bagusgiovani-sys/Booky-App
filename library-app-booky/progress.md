@@ -15,15 +15,22 @@
 - [x] Add `getErrorMessage(err, fallback?)` util to `lib/utils.ts`
 
 - [x] **Bug check & polish** — audited all pages; fixed 4 confirmed bugs (see below)
+- [x] Typed API layer — `apiGet/Post/Put/Patch/Delete<T>` helpers in `api.ts`; `ApiResponse<T>` + `PageMeta` in `types/api.ts`; all 14 hook files updated
+- [x] Merge `AddBook.tsx` + `BookEdit.tsx` → `BookFormPage.tsx`; mode determined by `:id` param; also fixed `Author.photo`, `meta` guard in Dashboard + Category
 
 ## Up Next
 
-- [ ] Typed API layer — add generic helper to `api.ts` so hooks get typed responses without casting
-- [ ] Merge `AddBook.tsx` + `BookEdit.tsx` into a shared `BookForm` component (~90% identical)
+- (nothing — all tracked items complete)
 
 ---
 
 ## Session Notes
+
+### 2026-05-01
+- Typed API layer: added `apiGet/Post/Put/Patch/Delete<T>` to `api.ts`; `ApiResponse<T>` + `PageMeta` to `types/api.ts`; updated all 14 hook files
+- Merged `AddBook.tsx` + `BookEdit.tsx` into `BookFormPage.tsx`; both admin routes now use single component
+- Fixed bonus issues surfaced by tighter types: added `photo` to `Author` type, fixed `meta` undefined guard in Dashboard + Category
+- Build passes clean
 
 ### 2026-04-30
 - Ran full `/init` inspection; improved `CLAUDE.md` with architecture details, created `fixes.md` and `progress.md`

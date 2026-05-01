@@ -1,22 +1,22 @@
 import { useQuery } from '@tanstack/react-query'
-import api from '@/services/api'
+import { apiGet } from '@/services/api'
 import { ENDPOINTS, QUERY_KEYS } from '@/constants'
+import type { Author, PopularAuthor } from '@/types/author'
+import type { Book } from '@/types/book'
+import type { ApiResponse, PageMeta } from '@/types/api'
 
 export const useAuthors = (q?: string) => {
   return useQuery({
     queryKey: [QUERY_KEYS.AUTHORS, q],
-    queryFn: async () => {
-      const data = await api.get(ENDPOINTS.AUTHORS, { params: { q } })
-      return data
-    },
+    queryFn: () => apiGet<ApiResponse<{ authors: Author[] } & PageMeta>>(ENDPOINTS.AUTHORS, { params: { q } }),
   })
 }
 
 export const usePopularAuthors = (limit?: number) => {
   return useQuery({
     queryKey: [QUERY_KEYS.AUTHORS_POPULAR],
-    queryFn: async () => {
-      const data = await api.get(ENDPOINTS.AUTHORS_POPULAR, { params: { limit } })
+    queryFn: async (): Promise<PopularAuthor[]> => {
+      const data = await apiGet<ApiResponse<{ authors: PopularAuthor[] }>>(ENDPOINTS.AUTHORS_POPULAR, { params: { limit } })
       return data.data.authors
     },
   })
@@ -25,10 +25,7 @@ export const usePopularAuthors = (limit?: number) => {
 export const useAuthorBooks = (id: number, params?: { page?: number; limit?: number }) => {
   return useQuery({
     queryKey: [QUERY_KEYS.AUTHOR_BOOKS, id, params],
-    queryFn: async () => {
-      const data = await api.get(ENDPOINTS.AUTHOR_BOOKS(id), { params })
-      return data
-    },
+    queryFn: () => apiGet<ApiResponse<{ author: Author; books: Book[] } & PageMeta>>(ENDPOINTS.AUTHOR_BOOKS(id), { params }),
     enabled: !!id,
   })
 }
