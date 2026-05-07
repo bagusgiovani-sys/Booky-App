@@ -93,8 +93,8 @@ npm run dev   # http://localhost:8080
 
 | Role | Email | Password |
 |---|---|---|
-| Member | user@library.com | password |
-| Admin | admin@library.com | password |
+| Admin | admin@library.local | admin 123 |
+| Member | Register your own account on the app | — |
 
 ---
 
