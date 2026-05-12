@@ -7,7 +7,6 @@ export const QUERY_KEYS = {
   AUTHOR_BOOKS: "authorBooks",
   CATEGORIES: "categories",
   CART: "cart",
-  CART_CHECKOUT: "cartCheckout",
   LOANS_MY: "loansmy",
   ME: "me",
   ME_LOANS: "meLoans",

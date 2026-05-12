@@ -11,13 +11,6 @@ export const useCart = () => {
   })
 }
 
-export const useCartCheckout = () => {
-  return useQuery({
-    queryKey: [QUERY_KEYS.CART_CHECKOUT],
-    queryFn: () => apiGet<ApiResponse<Cart>>(ENDPOINTS.CART_CHECKOUT),
-  })
-}
-
 export const useAddToCart = () => {
   const queryClient = useQueryClient()
   return useMutation({

@@ -4,6 +4,36 @@ Every fix, refactor, and improvement made to this codebase — with file paths.
 
 ---
 
+## [2026-05-12] Ultra-Instinct — Milestone 2 Major Improvements
+**Type:** CHORE / QUAL
+
+**Files changed:**
+- `package.json` — removed unused `next-themes` dependency
+- `src/components/ui/sonner.tsx` — removed `useTheme` import; hardcoded `theme="light"` (no dark mode in app)
+- `src/hooks/useCart.ts` — deleted dead `useCartCheckout` hook (never consumed by any component)
+- `src/constants/queryKeys.ts` — removed orphaned `CART_CHECKOUT` key
+- `src/constants/endpoints.ts` — `CART_CHECKOUT` endpoint constant left (harmless, still useful if feature is added later)
+- `src/pages/user/Checkout.tsx` — moved `navigate()` from render body into `useEffect`; restored `return null` guard after hooks
+- `src/pages/user/Profile.tsx` — removed misleading camera button stub (photo upload showed "coming soon" toast); removed unused `Camera` import; added `useEffect` import; added page pagination to BorrowedTab with "Load More" button
+
+**Before:**
+- `next-themes` was in dependencies but completely unused — wasted bundle size
+- `useCartCheckout` queried `/api/cart/checkout` GET but zero components read it
+- Checkout called `navigate()` directly in render (React anti-pattern in strict mode)
+- Profile photo upload UI shown in edit mode with "Photo upload coming soon" toast — false affordance
+- BorrowedTab hard-capped at 20 loans with no indication of truncation
+
+**After:**
+- `next-themes` removed; `sonner.tsx` uses hardcoded `"light"` theme
+- `useCartCheckout` and `CART_CHECKOUT` query key gone
+- Checkout navigate-in-render moved to `useEffect` with null guard after all hooks
+- Camera button removed — profile avatar is display-only during editing
+- BorrowedTab fetches 10 per page with accumulating Load More
+
+**Linked steps:** progress.md > Milestone 2 (all 6 items)
+
+---
+
 ## [2026-05-12] Ultra-Instinct — Milestone 1 Critical Bugs
 **Type:** BUG / SEC
 

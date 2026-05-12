@@ -28,12 +28,12 @@
 - [x] **[BUG]** Add `enabled` guard to `useRecommendedBooks` in `BookDetail.tsx:98` — fires with `categoryId: undefined` causing double fetch
 
 ### Milestone 2 — Major Improvements
-- [ ] **[CHORE]** Remove unused `next-themes` package from `package.json`
-- [ ] **[CHORE]** Delete dead `useCartCheckout` hook from `useCart.ts`
-- [ ] **[QUAL]** Replace bare `<p>` empty state in `Category.tsx:128` with `<EmptyState>`
-- [ ] **[QUAL]** Implement real photo upload in Profile or remove the camera button stub
-- [ ] **[QUAL]** Move `navigate()` in `Checkout.tsx:27` into a `useEffect`
-- [ ] **[QUAL]** Add pagination to `BorrowedTab` in `Profile.tsx` (currently hard-capped at 20)
+- [x] **[CHORE]** Remove unused `next-themes` package from `package.json`
+- [x] **[CHORE]** Delete dead `useCartCheckout` hook from `useCart.ts`
+- [x] **[QUAL]** Replace bare `<p>` empty state in `Category.tsx:128` with `<EmptyState>` (done in M1)
+- [x] **[QUAL]** Remove misleading camera button stub in Profile (photo upload "coming soon")
+- [x] **[QUAL]** Move `navigate()` in `Checkout.tsx` into a `useEffect`
+- [x] **[QUAL]** Add pagination to `BorrowedTab` in `Profile.tsx` (10/page with Load More)
 
 ### Milestone 3 — Quality & Polish
 - [ ] **[QUAL]** Fix auto-generated ISBN in `BookFormPage.tsx:42` edit mode (clears the field instead of generating fake ISBN)

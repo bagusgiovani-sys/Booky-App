@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { Star, Search, X, Camera } from 'lucide-react'
+import { Star, Search, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { RootState } from '@/store/index'
@@ -145,30 +145,6 @@ function ProfileTab() {
               {me?.name?.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          {editing && (
-            <>
-              <input
-                type="file"
-                accept="image/*"
-                id="avatar-upload"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0]
-                  if (file) {
-                    // handle upload here — pass to updateProfile or a dedicated upload hook
-                    toast.info('Photo upload coming soon')
-                  }
-                }}
-              />
-              <motion.label
-                htmlFor="avatar-upload"
-                initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary-300 flex items-center justify-center cursor-pointer"
-              >
-                <Camera size={12} className="text-white" />
-              </motion.label>
-            </>
-          )}
         </div>
 
         {/* Fields */}
@@ -225,9 +201,22 @@ function BorrowedTab() {
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<'BORROWED' | 'LATE' | 'RETURNED' | undefined>(undefined)
   const [reviewBookId, setReviewBookId] = useState<number | null>(null)
+  const [page, setPage] = useState(1)
+  const [allLoans, setAllLoans] = useState<Loan[]>([])
 
-  const { data: loansData } = useMyLoansProfile({ status, limit: 20 })
+  const { data: loansData, isSuccess: loansSuccess } = useMyLoansProfile({ status, page, limit: 10 })
+  const meta = loansData?.data
   const loans = loansData?.data?.loans ?? []
+
+  useEffect(() => {
+    if (!loansSuccess) return
+    setAllLoans(prev => page === 1 ? (loans as Loan[]) : [...prev, ...(loans as Loan[])])
+  }, [loansData, page, loansSuccess])
+
+  useEffect(() => {
+    setPage(1)
+    setAllLoans([])
+  }, [status])
 
   const statusFilters = [
     { label: 'All', value: undefined },
@@ -242,7 +231,7 @@ function BorrowedTab() {
     LATE: 'text-accent-red',
   }
 
-  const filtered = (loans as Loan[]).filter((loan) =>
+  const filtered = allLoans.filter((loan) =>
     loan.book?.title?.toLowerCase().includes(search.toLowerCase())
   )
 
@@ -327,6 +316,15 @@ function BorrowedTab() {
           </motion.div>
         )}
       </div>
+
+      {!!meta && meta.totalPages > page && (
+        <button
+          onClick={() => setPage(p => p + 1)}
+          className="w-full py-3 rounded-xl font-semibold text-sm bg-primary-200 text-primary-300"
+        >
+          Load More
+        </button>
+      )}
 
       <AnimatePresence>
         {reviewBookId && (

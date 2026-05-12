@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useCart } from '@/hooks/useCart'
@@ -24,10 +24,13 @@ export default function Checkout() {
   const [agreedReturn, setAgreedReturn] = useState(false)
   const [agreedPolicy, setAgreedPolicy] = useState(false)
 
-  if (!selectedIds.length) {
-    navigate(ROUTES.CART, { replace: true })
-    return null
-  }
+  useEffect(() => {
+    if (!selectedIds.length) {
+      navigate(ROUTES.CART, { replace: true })
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!selectedIds.length) return null
 
   const items = ((cartData?.data?.items ?? []) as CartItem[]).filter((item) =>
     selectedIds.includes(item.id)
