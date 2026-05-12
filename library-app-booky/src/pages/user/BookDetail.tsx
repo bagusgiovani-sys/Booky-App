@@ -95,7 +95,10 @@ export default function BookDetail() {
   const [showBorrowModal, setShowBorrowModal] = useState(false)
 
   const { data: bookData, isLoading } = useBookDetail(bookId)
-  const { data: relatedBooks } = useRecommendedBooks({ categoryId: bookData?.data?.categoryId, limit: 4 })
+  const { data: relatedBooks } = useRecommendedBooks(
+    { categoryId: bookData?.data?.categoryId, limit: 4 },
+    { enabled: !!bookData?.data?.categoryId }
+  )
   const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart()
   const { mutate: borrowBook, isPending: isBorrowing } = useBorrowBook()
 

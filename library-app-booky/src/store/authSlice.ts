@@ -7,9 +7,17 @@ interface AuthState {
   user: User | null
 }
 
+const parseStoredUser = (): User | null => {
+  try {
+    return JSON.parse(localStorage.getItem('user') || 'null')
+  } catch {
+    return null
+  }
+}
+
 const initialState: AuthState = {
   token: localStorage.getItem('token'),
-  user: JSON.parse(localStorage.getItem('user') || 'null'),
+  user: parseStoredUser(),
 }
 
 const authSlice = createSlice({

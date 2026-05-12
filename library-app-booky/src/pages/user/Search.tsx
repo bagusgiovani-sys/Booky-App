@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useBooks } from '@/hooks/useBooks'
 import { ROUTES } from '@/constants'
@@ -14,9 +14,21 @@ export default function SearchPage() {
   const q = searchParams.get('q') ?? ''
   const [page, setPage] = useState(1)
 
-  const { data: booksData, isFetching } = useBooks({ q, page, limit: 8 })
+  const { data: booksData, isFetching, isSuccess: booksSuccess } = useBooks({ q, page, limit: 8 })
   const books = booksData?.data?.books ?? []
   const meta = booksData?.data
+
+  const [allBooks, setAllBooks] = useState<Book[]>([])
+
+  useEffect(() => {
+    if (!booksSuccess) return
+    setAllBooks(prev => page === 1 ? books : [...prev, ...books])
+  }, [booksData, page, booksSuccess])
+
+  useEffect(() => {
+    setPage(1)
+    setAllBooks([])
+  }, [q])
 
   return (
     <div className="px-4 pt-4 pb-10 space-y-4">
@@ -27,11 +39,11 @@ export default function SearchPage() {
         </h1>
       </div>
 
-      {isFetching ? (
+      {isFetching && page === 1 ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[...Array(8)].map((_, i) => <BookCardSkeleton key={i} />)}
         </div>
-      ) : books.length === 0 ? (
+      ) : !isFetching && allBooks.length === 0 ? (
         <EmptyState
           icon="🔍"
           title="No books found"
@@ -40,7 +52,7 @@ export default function SearchPage() {
       ) : (
         <>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {books.map((book: Book) => (
+            {allBooks.map((book: Book) => (
               <BookCard key={book.id} book={book} onClick={() => navigate(ROUTES.BOOK_DETAIL(book.id))} />
             ))}
           </div>

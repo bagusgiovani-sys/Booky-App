@@ -2,6 +2,34 @@
 
 Every fix, refactor, and improvement made to this codebase — with file paths.
 
+---
+
+## [2026-05-12] Ultra-Instinct — Milestone 1 Critical Bugs
+**Type:** BUG / SEC
+
+**Files changed:**
+- `src/store/authSlice.ts` — wrap localStorage JSON.parse in try/catch
+- `src/hooks/useBooks.ts` — add `enabled` option param to `useRecommendedBooks`
+- `src/pages/user/BookDetail.tsx` — add `enabled: !!bookData?.data?.categoryId` guard on related books query
+- `src/pages/user/Home.tsx` — accumulate recommended books across Load More pages
+- `src/pages/user/Category.tsx` — accumulate filtered books across Load More pages; replace bare `<p>` empty state with `<EmptyState>`; add `EmptyState` import; add `useEffect` import
+- `src/pages/user/Search.tsx` — accumulate search results across Load More pages; reset on query change
+
+**Before:**
+- `JSON.parse(localStorage.getItem('user') || 'null')` at module init — crashes app before ErrorBoundary on corrupted localStorage
+- `useRecommendedBooks` in BookDetail fired with `categoryId: undefined` causing a wasted initial fetch
+- "Load More" on Home/Category/Search called `setPage(p+1)` which replaced the entire book list with page N only — users saw old books disappear
+
+**After:**
+- `parseStoredUser()` wraps JSON.parse in try/catch; returns null on invalid data
+- Related books query skips until `categoryId` is known via `enabled` option
+- All three list pages accumulate books in local `allBooks`/`allRecommended` state; page 1 = replace, page N = append; Category also resets on filter change, Search resets on `q` change
+- Category empty state now uses `<EmptyState>` (consistent with all other list pages)
+
+**Linked steps:** progress.md > Milestone 1 (all 3 items)
+
+---
+
 ## Status Legend
 - [x] Done
 - [ ] Pending

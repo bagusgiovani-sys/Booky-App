@@ -22,7 +22,23 @@
 
 ## Up Next
 
-- (nothing queued)
+### Milestone 1 — Critical Bugs (do first)
+- [x] **[BUG]** Fix "Load More" replacing instead of appending results — `Home.tsx`, `Category.tsx`, `Search.tsx`
+- [x] **[SEC]** Wrap `JSON.parse` in try/catch in `authSlice.ts:12` — crashes app before ErrorBoundary if localStorage is corrupted
+- [x] **[BUG]** Add `enabled` guard to `useRecommendedBooks` in `BookDetail.tsx:98` — fires with `categoryId: undefined` causing double fetch
+
+### Milestone 2 — Major Improvements
+- [ ] **[CHORE]** Remove unused `next-themes` package from `package.json`
+- [ ] **[CHORE]** Delete dead `useCartCheckout` hook from `useCart.ts`
+- [ ] **[QUAL]** Replace bare `<p>` empty state in `Category.tsx:128` with `<EmptyState>`
+- [ ] **[QUAL]** Implement real photo upload in Profile or remove the camera button stub
+- [ ] **[QUAL]** Move `navigate()` in `Checkout.tsx:27` into a `useEffect`
+- [ ] **[QUAL]** Add pagination to `BorrowedTab` in `Profile.tsx` (currently hard-capped at 20)
+
+### Milestone 3 — Quality & Polish
+- [ ] **[QUAL]** Fix auto-generated ISBN in `BookFormPage.tsx:42` edit mode (clears the field instead of generating fake ISBN)
+- [ ] **[DX]** Remove redundant outer `<Suspense>` in `routes/index.tsx` (already wrapped in UserRoutes/AdminRoutes)
+- [ ] **[QUAL]** Replace inline loading skeleton in `BookDetail.tsx` with a proper `BookDetailSkeleton` component
 
 ## 10/10 Overhaul — All Done ✓
 
@@ -49,6 +65,12 @@
 ---
 
 ## Session Notes
+
+### 2026-05-12 (Ultra-Instinct audit)
+- Generated `origin.md` at repo root — full project audit scoring 7.9/10
+- Found 3 critical bugs: Load More replace-vs-append on 3 pages, unguarded JSON.parse in authSlice, missing `enabled` guard in BookDetail
+- Found 6 major issues: unused next-themes dep, dead useCartCheckout hook, Category missing EmptyState, Profile photo upload stub, Checkout navigate-in-render, BorrowedTab no pagination
+- Found 3 minor polish items
 
 ### 2026-05-02
 - Revamped `fixes.md` — 70 → 170 lines; added exact `src/` file paths for every change, grouped into 5 sections (TypeScript, Architecture, New Components, Bug Fixes, DX); added missing routes folder refactor and all prior sessions' changes that were undocumented

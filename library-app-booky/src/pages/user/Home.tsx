@@ -59,12 +59,14 @@ export default function Home() {
     ?.filter((cat) => CATEGORY_ORDER.includes(cat.name))
     .sort((a, b) => CATEGORY_ORDER.indexOf(a.name) - CATEGORY_ORDER.indexOf(b.name));
 
-  const { data: recommended, isFetching } = useRecommendedBooks({
+  const { data: recommended, isFetching, isSuccess: recSuccess } = useRecommendedBooks({
     by: "rating",
     categoryId: activeCategoryId,
     page,
     limit: 10,
   });
+
+  const [allRecommended, setAllRecommended] = useState<Book[]>([]);
 
   const { data: popularAuthors } = usePopularAuthors(4);
 
@@ -77,6 +79,11 @@ export default function Home() {
     sessionStorage.setItem(OPENER_KEY, "true");
     setShowOpening(false);
   };
+
+  useEffect(() => {
+    if (!recSuccess || !recommended) return;
+    setAllRecommended(prev => page === 1 ? recommended : [...prev, ...recommended]);
+  }, [recommended, page, recSuccess]);
 
   useEffect(() => {
     if (!showOpening) return;
@@ -159,15 +166,15 @@ export default function Home() {
               : "Recommendation"}
           </h2>
 
-          {isFetching ? (
+          {isFetching && page === 1 ? (
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {[...Array(10)].map((_, i) => <BookCardSkeleton key={i} />)}
             </div>
-          ) : recommended?.length === 0 ? (
+          ) : !isFetching && allRecommended.length === 0 ? (
             <EmptyState icon="📚" title="No books found" description="Try selecting a different category." />
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {recommended?.map((book: Book, i: number) => (
+              {allRecommended.map((book: Book, i: number) => (
                 <motion.div
                   key={book.id}
                   custom={i}

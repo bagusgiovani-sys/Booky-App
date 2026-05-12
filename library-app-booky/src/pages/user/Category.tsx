@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useBooks } from '@/hooks/useBooks'
 import { useCategories } from '@/hooks/useCategories'
@@ -8,6 +8,7 @@ import type { Category } from '@/types/category'
 import type { Book } from '@/types/book'
 import { Star, SlidersHorizontal, X } from 'lucide-react'
 import BookCard from '@/components/common/BookCard'
+import EmptyState from '@/components/common/EmptyState'
 import { Checkbox } from '@/components/ui/checkbox'
 
 
@@ -26,7 +27,7 @@ export default function Category() {
     ?.filter((cat) => CATEGORY_ORDER.includes(cat.name))
     .sort((a, b) => CATEGORY_ORDER.indexOf(a.name) - CATEGORY_ORDER.indexOf(b.name))
 
-  const { data: booksData, isFetching } = useBooks({
+  const { data: booksData, isFetching, isSuccess: booksSuccess } = useBooks({
     categoryId: selectedCategories.length === 1 ? selectedCategories[0] : undefined,
     minRating: selectedRatings.length === 1 ? selectedRatings[0] : undefined,
     page,
@@ -34,6 +35,13 @@ export default function Category() {
   })
   const books = booksData?.data?.books ?? []
   const meta = booksData?.data
+
+  const [allBooks, setAllBooks] = useState<Book[]>([])
+
+  useEffect(() => {
+    if (!booksSuccess) return
+    setAllBooks(prev => page === 1 ? books : [...prev, ...books])
+  }, [booksData, page, booksSuccess])
 
   const toggleCategory = (id: number) => {
     setSelectedCategories(prev =>
@@ -119,17 +127,17 @@ export default function Category() {
         {/* Books Grid */}
         <div className="flex-1">
           <h1 className="hidden md:block text-2xl font-bold text-gray-900 mb-4">Book List</h1>
-          {isFetching ? (
+          {isFetching && page === 1 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[...Array(8)].map((_, i) => (
                 <div key={i} className="h-56 rounded-2xl bg-gray-100 animate-pulse" />
               ))}
             </div>
-          ) : books.length === 0 ? (
-            <p className="text-center text-gray-400 py-20">No books found</p>
+          ) : !isFetching && allBooks.length === 0 ? (
+            <EmptyState icon="📚" title="No books found" description="Try adjusting the filters." />
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {books.map((book: Book) => (
+              {allBooks.map((book: Book) => (
                 <BookCard key={book.id} book={book} onClick={() => navigate(ROUTES.BOOK_DETAIL(book.id))} />
               ))}
             </div>

@@ -26,16 +26,20 @@ export const useBookDetail = (id: number) => {
   })
 }
 
-export const useRecommendedBooks = (params?: {
-  by?: 'rating' | 'popular'
-  categoryId?: number
-  page?: number
-  limit?: number
-}) => {
+export const useRecommendedBooks = (
+  params?: {
+    by?: 'rating' | 'popular'
+    categoryId?: number
+    page?: number
+    limit?: number
+  },
+  options?: { enabled?: boolean }
+) => {
   return useQuery({
     queryKey: [QUERY_KEYS.BOOKS_RECOMMEND, params],
     queryFn: () => apiGet<ApiResponse<{ books: Book[] }>>(ENDPOINTS.BOOKS_RECOMMEND, { params }),
     select: (data) => data.data.books,
+    enabled: options?.enabled ?? true,
   })
 }
 
