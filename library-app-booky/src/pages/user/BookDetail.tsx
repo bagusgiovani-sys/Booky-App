@@ -9,6 +9,7 @@ import { useBorrowBook } from '@/hooks/useLoans'
 import { ROUTES } from '@/constants'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import BookCard from '@/components/common/BookCard'
+import BookDetailSkeleton from '@/components/common/BookDetailSkeleton'
 import { formatDateTime } from '@/lib/utils'
 import type { Review } from '@/types/review'
 import type { Book } from '@/types/book'
@@ -105,21 +106,7 @@ export default function BookDetail() {
   const book: Book | undefined = bookData?.data
   const reviews: Review[] = book?.reviews ?? []
 
-  if (isLoading) {
-    return (
-      <div className="space-y-4 px-4 pt-4">
-        {[...Array(3)].map((_, i) => (
-          <motion.div
-            key={i}
-            animate={{ opacity: [0.4, 0.8, 0.4] }}
-            transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.15 }}
-            className="bg-gray-100 rounded-2xl"
-            style={{ height: i === 0 ? '280px' : i === 1 ? '24px' : '16px', width: i === 0 ? '100%' : i === 1 ? '75%' : '50%' }}
-          />
-        ))}
-      </div>
-    )
-  }
+  if (isLoading) return <BookDetailSkeleton />
 
   if (!book) return <div className="text-center py-20 text-gray-400">Book not found</div>
 

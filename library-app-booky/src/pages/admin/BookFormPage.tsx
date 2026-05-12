@@ -38,7 +38,7 @@ export default function BookFormPage() {
   useEffect(() => {
     if (book && isEdit) {
       setTitle(book.title ?? '')
-      setIsbn(book.isbn ?? `ISBN-${Date.now()}`)
+      setIsbn(book.isbn ?? '')
       setAuthor(book.author?.name ?? '')
       setCategoryId(book.categoryId ?? '')
       setTotalPages(book.totalPages?.toString() ?? '')
