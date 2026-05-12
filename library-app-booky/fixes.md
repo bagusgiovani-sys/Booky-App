@@ -4,6 +4,26 @@ Every fix, refactor, and improvement made to this codebase — with file paths.
 
 ---
 
+## [2026-05-12] Ultra-Instinct — Milestone 3 Quality & Polish
+**Type:** QUAL / DX
+
+**Files changed:**
+- `src/pages/admin/BookFormPage.tsx` — ISBN field in edit mode now clears to `''` when book has no ISBN (was filling with fake `ISBN-{timestamp}`)
+- `src/components/common/BookDetailSkeleton.tsx` — new component: cover placeholder, title/author block, stats row, description lines; all animated with Framer Motion pulse
+- `src/pages/user/BookDetail.tsx` — replaced 12-line inline skeleton block with `<BookDetailSkeleton />`
+
+**Before:**
+- Edit mode auto-filled ISBN with `` `ISBN-${Date.now()}` `` if book.isbn was null — admin could accidentally save a fake ISBN
+- BookDetail loading state was an ad-hoc array of inline `motion.div`s inconsistent with the rest of the app
+
+**After:**
+- ISBN field is empty when no ISBN exists — admin sees it's blank and can fill it intentionally
+- `BookDetailSkeleton` is a reusable component matching the real page layout; `BookDetail` loading state is now a single line
+
+**Linked steps:** progress.md > Milestone 3 (items 1 + 3; item 2 closed as non-issue)
+
+---
+
 ## [2026-05-12] Ultra-Instinct — Milestone 2 Major Improvements
 **Type:** CHORE / QUAL
 

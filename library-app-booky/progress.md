@@ -36,9 +36,9 @@
 - [x] **[QUAL]** Add pagination to `BorrowedTab` in `Profile.tsx` (10/page with Load More)
 
 ### Milestone 3 — Quality & Polish
-- [ ] **[QUAL]** Fix auto-generated ISBN in `BookFormPage.tsx:42` edit mode (clears the field instead of generating fake ISBN)
-- [ ] **[DX]** Remove redundant outer `<Suspense>` in `routes/index.tsx` (already wrapped in UserRoutes/AdminRoutes)
-- [ ] **[QUAL]** Replace inline loading skeleton in `BookDetail.tsx` with a proper `BookDetailSkeleton` component
+- [x] **[QUAL]** Fix auto-generated ISBN in `BookFormPage.tsx` edit mode — blank field instead of fake `ISBN-{timestamp}`
+- [x] **[DX]** Outer `<Suspense>` in `routes/index.tsx` is NOT redundant — covers lazy auth pages; closed as non-issue
+- [x] **[QUAL]** Created `BookDetailSkeleton` component; replaced 12-line inline skeleton in `BookDetail.tsx` with one-liner
 
 ## 10/10 Overhaul — All Done ✓
 
